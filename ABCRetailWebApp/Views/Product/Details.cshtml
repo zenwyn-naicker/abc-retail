@@ -1,0 +1,212 @@
+﻿@model ABCRetailWebApp.Models.ProductEntity
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Product Profile</h1>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 page-title">
+        <i class="bi bi-box-seam-fill me-2"></i>Product Details
+    </h2>
+    <div class="action-buttons">
+        <a asp-action="Edit" asp-route-rowKey="@Model.RowKey" class="btn btn-warning">
+            <i class="bi bi-pencil-square me-2"></i>Edit Product
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-arrow-left me-2"></i>Back to Products
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Main Product Information Card -->
+    <div class="col-lg-8">
+        <div class="card info-card">
+            <div class="card-header info-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar">
+                            <i class="bi bi-box-seam-fill"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h3 class="mb-1 text-white">@Model.Name</h3>
+                            <small style="opacity: 0.75; color: white;">Product ID: @Model.RowKey</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge" style="background-color: #f8f9fa; color: #2c3e50; padding: 0.5rem 0.75rem; border-radius: 6px;">
+                            <i class="bi bi-calendar me-1"></i>
+                            Added @Model.CreatedDate.ToString("MMM yyyy")
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0 details-table">
+                        <tbody>
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-hash me-2"></i>Product ID
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <span class="badge id-badge">@Model.RowKey</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-tag me-2"></i>Product Name
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <strong style="color: var(--dark-text); font-size: 1.1rem;">@Model.Name</strong>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-currency-dollar me-2"></i>Price
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <span style="color: var(--primary-green); font-weight: 700; font-size: 1.25rem;">@($"R{Model.Price:F2}")</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-boxes me-2"></i>Stock Quantity
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <span class="badge @(Model.Stock > 10 ? "status-delivered" : Model.Stock > 0 ? "status-pending" : "status-cancelled")">
+                                        @Model.Stock units
+                                    </span>
+                                    @if (Model.Stock <= 5 && Model.Stock > 0)
+                                    {
+                                        <small class="text-warning d-block mt-1">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>Low stock alert
+                                        </small>
+                                    }
+                                    else if (Model.Stock == 0)
+                                    {
+                                        <small class="text-danger d-block mt-1">
+                                            <i class="bi bi-x-circle me-1"></i>Out of stock
+                                        </small>
+                                    }
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-folder me-2"></i>Category
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <span class="badge" style="background-color: rgba(76, 175, 80, 0.1); color: var(--primary-green); border: 1px solid rgba(76, 175, 80, 0.2);">@Model.Category</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-text-paragraph me-2"></i>Description
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    @if (!string.IsNullOrEmpty(Model.Description))
+                                    {
+                                        <div style="color: var(--dark-text); line-height: 1.6;">
+                                            @Html.Raw(Model.Description.Replace("\n", "<br/>"))
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #6c757d;">
+                                            <i class="bi bi-dash me-2"></i>No description provided
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <tr>
+                                    <td class="detail-label">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-image me-2"></i>Product Image
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <img src="@Model.ImageUrl" alt="@Model.Name" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);" />
+                                    </td>
+                                </tr>
+                            }
+
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-calendar-plus me-2"></i>Date Added
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div>
+                                        <strong style="color: var(--dark-text);">@Model.CreatedDate.ToString("MMMM dd, yyyy")</strong>
+                                        <br />
+                                        <small class="text-muted">@Model.CreatedDate.ToString("h:mm tt")</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Panel -->
+    <div class="col-lg-4">
+        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); margin-bottom: 1.5rem;">
+            <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: var(--primary-green);">
+                <h5 class="mb-0">
+                    <i class="bi bi-gear-fill me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-rowKey="@Model.RowKey" class="btn btn-warning btn-lg">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Product
+                    </a>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Products
+                    </a>
+
+                    <hr style="margin: 1rem 0; border-color: rgba(76, 175, 80, 0.2);">
+
+                    <button class="btn btn-outline-success btn-lg" onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>Print Details
+                    </button>
+
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <a href="@Model.ImageUrl" target="_blank" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-zoom-in me-2"></i>View Full Image
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

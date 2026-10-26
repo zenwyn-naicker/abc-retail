@@ -1,0 +1,59 @@
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vs/
+.idea/
+.vscode/
+.claude/
+*.suo
+*.user
+*.log
+
+# Build output; vendored browser libraries under wwwroot/lib are retained.
+[Bb]in/
+[Oo]bj/
+[Bb]uild/
+/dist/
+.gradle/
+node_modules/
+*.class
+TestResults/
+coverage/
+**/nbproject/private/
+
+# Local secrets and deployment state
+.env
+.env.*
+!.env.example
+!**/.env.example
+appsettings.Local.json
+appsettings.*.Local.json
+local.settings.json
+local.properties
+google-services.json
+secrets.json
+*.pubxml
+*.pubxml.user
+**/PublishProfiles/
+**/ServiceDependencies/
+serviceDependencies*.json
+*.pfx
+*.p12
+*.pem
+*.jks
+*.keystore
+*.db
+*.sqlite*
+*.mdf
+*.ldf
+*.bak
+*.local.sql
+
+# Runtime uploads and generated reports
+SecureUploads/
+App_Data/
+uploads/
+reports/
+
+# Local verification output
+/work/

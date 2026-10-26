@@ -1,0 +1,164 @@
+﻿@model List<ABCRetailWebApp.Models.CustomerOrderEntity>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="container py-4">
+    <!-- Page Header -->
+    <div class="hero-section mb-4">
+        <h1 class="display-4">
+            <i class="bi bi-bag-check me-2"></i>My Orders
+        </h1>
+        <p class="lead text-muted mb-0">View and track your orders</p>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (!string.IsNullOrEmpty(TempData["Success"] as string))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(TempData["Error"] as string))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Orders List -->
+        <div class="row">
+            @foreach (var order in Model)
+            {
+                <div class="col-lg-12 mb-3">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <!-- Order Info -->
+                                <div class="col-md-3">
+                                    <h6 class="mb-1" style="color: var(--primary-green);">
+                                        <i class="bi bi-hash"></i>Order #@order.OrderId
+                                    </h6>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i>@order.OrderDate.ToString("MMM dd, yyyy")
+                                    </small>
+                                </div>
+
+                                <!-- Order Status -->
+                                <div class="col-md-2">
+                                    @{
+                                        var statusClass = order.OrderStatus.ToLower() switch
+                                        {
+                                            "pending" => "status-pending",
+                                            "processing" => "status-processing",
+                                            "processed" => "status-delivered",
+                                            "shipped" => "status-shipped",
+                                            "delivered" => "status-delivered",
+                                            "cancelled" => "status-cancelled",
+                                            _ => "badge-secondary"
+                                        };
+                                    }
+                                    <span class="badge @statusClass">
+                                        @order.OrderStatus
+                                    </span>
+                                </div>
+
+                                <!-- Order Total -->
+                                <div class="col-md-3">
+                                    <small class="text-muted d-block">Total Amount</small>
+                                    <h5 class="mb-0" style="color: var(--primary-green);">
+                                        R @order.TotalAmount.ToString("N2")
+                                    </h5>
+                                </div>
+
+                                <!-- Items Count -->
+                                <div class="col-md-2">
+                                    <small class="text-muted d-block">Items</small>
+                                    <h6 class="mb-0">@order.Items.Count item@(order.Items.Count != 1 ? "s" : "")</h6>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="col-md-2 text-end">
+                                    <a asp-action="Details" asp-route-orderId="@order.OrderId" class="btn btn-success btn-sm">
+                                        <i class="bi bi-eye me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(order.DeliveryAddress))
+                            {
+                                <hr class="my-2" />
+                                <small class="text-muted">
+                                    <i class="bi bi-truck me-1"></i>
+                                    <strong>Delivery:</strong> @order.DeliveryAddress
+                                </small>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(45, 125, 50, 0.1) 100%);">
+                    <div class="card-body py-4">
+                        <i class="bi bi-box-seam" style="font-size: 2.5rem; color: var(--primary-green);"></i>
+                        <h3 class="mt-2 mb-0" style="color: var(--primary-green);">@Model.Count</h3>
+                        <p class="text-muted mb-0">Total Orders</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);">
+                    <div class="card-body py-4">
+                        <i class="bi bi-clock-history" style="font-size: 2.5rem; color: #ffc107;"></i>
+                        <h3 class="mt-2 mb-0" style="color: #856404;">@Model.Count(o => o.OrderStatus.Equals("Pending", StringComparison.OrdinalIgnoreCase))</h3>
+                        <p class="text-muted mb-0">Pending Orders</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center" style="background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.1) 100%);">
+                    <div class="card-body py-4">
+                        <i class="bi bi-currency-dollar" style="font-size: 2.5rem; color: #0d6efd;"></i>
+                        <h3 class="mt-2 mb-0" style="color: #084298;">R @Model.Sum(o => o.TotalAmount).ToString("N2")</h3>
+                        <p class="text-muted mb-0">Total Spent</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm text-center py-5">
+                    <div class="card-body">
+                        <div class="empty-icon mb-4">
+                            <i class="bi bi-bag-x" style="font-size: 5rem; color: var(--accent-green); opacity: 0.4;"></i>
+                        </div>
+                        <h3 class="mb-3" style="color: var(--dark-text);">No Orders Yet</h3>
+                        <p class="text-muted mb-4">
+                            You haven't placed any orders yet.
+                            <br />Start shopping to create your first order!
+                        </p>
+                        <a asp-controller="Product" asp-action="Index" class="btn btn-success btn-lg">
+                            <i class="bi bi-shop me-2"></i>Browse Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

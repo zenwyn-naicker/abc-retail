@@ -1,0 +1,183 @@
+﻿@model ABCRetailWebApp.Models.CustomerEntity
+@{
+    ViewData["Title"] = "Edit Customer";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Edit Customer</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-header text-white py-4"
+                 style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%); border-radius: 15px 15px 0 0;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-pencil-square" style="font-size: 2.5rem;"></i>
+                        <div class="ms-3">
+                            <h3 class="mb-0">Edit Customer</h3>
+                            <small class="opacity-75">Customer ID: @Model.RowKey</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <small class="opacity-75">
+                            <i class="bi bi-calendar me-1"></i>
+                            Created: @Model.CreatedDate.ToString("MMM dd, yyyy")
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="PartitionKey" />
+                    <input type="hidden" asp-for="RowKey" />
+                    <input type="hidden" name="ETag" value="@Model.ETag.ToString()" />
+                    <input type="hidden" asp-for="Timestamp" />
+                    <input type="hidden" asp-for="CreatedDate" />
+
+                    <!-- Customer ID Display -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-hash me-2"></i>Customer ID
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background-color: var(--light-bg); border-color: rgba(76, 175, 80, 0.2);">
+                                <i class="bi bi-lock-fill text-muted"></i>
+                            </span>
+                            <input value="@Model.RowKey" class="form-control form-control-lg" readonly
+                                   style="background-color: var(--light-bg); border-color: rgba(76, 175, 80, 0.2);" />
+                        </div>
+                        <small class="text-muted">Customer ID cannot be changed</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-person me-2"></i>Full Name <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Name" class="form-control form-control-lg"
+                               style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px;"
+                               placeholder="Enter customer's full name" required />
+                        <span asp-validation-for="Name" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Email" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-envelope me-2"></i>Email Address <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Email" type="email" class="form-control form-control-lg"
+                               style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px;"
+                               placeholder="customer@example.com" required />
+                        <span asp-validation-for="Email" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Phone" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-telephone me-2"></i>Phone Number
+                        </label>
+                        <input asp-for="Phone" type="tel" class="form-control form-control-lg"
+                               style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px;"
+                               placeholder="(123) 456-7890" />
+                        <span asp-validation-for="Phone" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Address" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-geo-alt me-2"></i>Address
+                        </label>
+                        <textarea asp-for="Address" class="form-control form-control-lg" rows="4"
+                                  style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px; resize: vertical;"
+                                  placeholder="Enter complete address including street, city, state, and postal code"></textarea>
+                        <span asp-validation-for="Address" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-5">
+                        <div>
+                            <a asp-action="Details" asp-route-rowKey="@Model.RowKey" class="btn btn-outline-info btn-lg me-2">
+                                <i class="bi bi-eye me-2"></i>View Details
+                            </a>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>Back to List
+                            </a>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-success btn-lg px-4">
+                                <i class="bi bi-check-circle me-2"></i>Update Customer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Warning Section -->
+        <div class="mt-4">
+            <div class="alert alert-warning" style="border-radius: 10px; border: 1px solid #ffc107;">
+                <h6 class="text-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Important Notice
+                </h6>
+                <p class="mb-0">
+                    Changes to customer information will be immediately applied to all existing orders and contracts.
+                    Please ensure all information is accurate before saving.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Enhanced form validation styling
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Dynamic border color on focus
+        document.querySelectorAll('.form-control').forEach(function(input) {
+            if (!input.readOnly) {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-green)';
+                    this.style.boxShadow = '0 0 0 0.2rem rgba(76, 175, 80, 0.25)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = 'rgba(76, 175, 80, 0.2)';
+                    this.style.boxShadow = 'none';
+                });
+            }
+        });
+
+        // Confirmation dialog for unsaved changes
+        let formChanged = false;
+        document.querySelectorAll('input, textarea, select').forEach(function(input) {
+            if (!input.readOnly && input.type !== 'hidden') {
+                input.addEventListener('change', function() {
+                    formChanged = true;
+                });
+            }
+        });
+
+        document.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                if (formChanged && !confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

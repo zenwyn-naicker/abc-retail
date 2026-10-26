@@ -1,0 +1,168 @@
+﻿@model ABCRetailWebApp.Models.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+    var cartItems = ViewBag.CartItems as List<ABCRetailWebApp.Models.ShoppingCartEntity>;
+    var cartTotal = ViewBag.CartTotal ?? 0m;
+}
+
+<div class="container py-4">
+    <!-- Page Header -->
+    <div class="hero-section mb-4">
+        <h1 class="display-4">
+            <i class="bi bi-credit-card me-2"></i>Checkout
+        </h1>
+        <p class="lead text-muted mb-0">Complete your order</p>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (!string.IsNullOrEmpty(TempData["Error"] as string))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="ProcessCheckout" method="post">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <!-- Delivery Information -->
+            <div class="col-lg-7 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header" style="background: var(--gradient-primary); color: white; border-radius: 8px 8px 0 0;">
+                        <h5 class="mb-0">
+                            <i class="bi bi-truck me-2"></i>Delivery Information
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- Customer Name -->
+                        <div class="mb-4">
+                            <label asp-for="CustomerName" class="form-label">
+                                <i class="bi bi-person me-1"></i>Full Name
+                            </label>
+                            <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Enter your full name" />
+                            <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Delivery Address -->
+                        <div class="mb-4">
+                            <label asp-for="DeliveryAddress" class="form-label">
+                                <i class="bi bi-geo-alt me-1"></i>Delivery Address
+                            </label>
+                            <textarea asp-for="DeliveryAddress" class="form-control" rows="4" placeholder="Enter your complete delivery address including street, city, and postal code"></textarea>
+                            <span asp-validation-for="DeliveryAddress" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">
+                                <i class="bi bi-chat-left-text me-1"></i>Order Notes (Optional)
+                            </label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Any special instructions for your order?"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Delivery Info Box -->
+                        <div class="alert" style="background-color: rgba(76, 175, 80, 0.1); border-left: 4px solid var(--primary-green); border-radius: 8px;">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-info-circle me-2 mt-1" style="color: var(--primary-green); font-size: 1.2rem;"></i>
+                                <div>
+                                    <strong style="color: var(--primary-green);">Delivery Information</strong>
+                                    <p class="mb-0 small text-muted mt-1">
+                                        Standard delivery takes 5-7 business days. You will receive an email confirmation once your order is placed.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header" style="background: var(--gradient-primary); color: white; border-radius: 8px 8px 0 0;">
+                        <h5 class="mb-0">
+                            <i class="bi bi-receipt me-2"></i>Order Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Cart Items -->
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h6 class="mb-3" style="color: var(--primary-green);">Items in Order</h6>
+                            @if (cartItems != null)
+                            {
+                                @foreach (var item in cartItems)
+                                {
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="flex-grow-1">
+                                            <small class="fw-bold d-block">@item.ProductName</small>
+                                            <small class="text-muted">Qty: @item.Quantity × R@(item.UnitPrice.ToString("N2"))</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="fw-bold">R@(item.TotalPrice.ToString("N2"))</small>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <!-- Price Breakdown -->
+                        <div class="mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal:</span>
+                                <span class="fw-bold">R @(cartTotal.ToString("N2"))</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Shipping:</span>
+                                <span class="text-success fw-bold">FREE</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Tax:</span>
+                                <span class="fw-bold">Included</span>
+                            </div>
+                        </div>
+
+                        <!-- Total -->
+                        <div class="mb-4 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0" style="color: var(--primary-green);">Total:</h5>
+                                <h4 class="mb-0" style="color: var(--primary-green);">R @(cartTotal.ToString("N2"))</h4>
+                            </div>
+                        </div>
+
+                        <!-- Place Order Button -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Place Order
+                            </button>
+                            <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-success">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Cart
+                            </a>
+                        </div>
+
+                        <!-- Security Badges -->
+                        <div class="text-center pt-3 border-top">
+                            <small class="text-muted d-block mb-2">
+                                <i class="bi bi-shield-check me-1" style="color: var(--primary-green);"></i>
+                                Secure Checkout
+                            </small>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-lock-fill me-1" style="color: var(--primary-green);"></i>
+                                Your information is protected
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

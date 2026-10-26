@@ -1,0 +1,224 @@
+﻿@model List<ABCRetailWebApp.Models.ProductEntity>
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Product Management</h1>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 page-title">
+        <i class="bi bi-box-seam-fill me-2"></i>Product Catalog
+    </h2>
+    <div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-success btn-lg shadow-sm me-2">
+                <i class="bi bi-cart3 me-2"></i>View Cart
+            </a>
+        }
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-success btn-lg shadow-sm">
+                <i class="bi bi-plus-circle me-2"></i>Add New Product
+            </a>
+        }
+    </div>
+</div>
+
+<div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+    <div class="card-body p-0">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%); color: white;">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="bi bi-image me-1"></i>Image
+                            </th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col" class="px-4 py-3">
+                                    <i class="bi bi-hash me-1"></i>Product ID
+                                </th>
+                            }
+                            <th scope="col" class="px-4 py-3">
+                                <i class="bi bi-tag me-1"></i>Name
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="bi bi-folder me-1"></i>Category
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="bi bi-currency-dollar me-1"></i>Price
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="bi bi-boxes me-1"></i>Stock
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                <i class="bi bi-cart-plus me-1"></i>Add to Cart
+                            </th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col" class="px-4 py-3 text-center">
+                                    <i class="bi bi-gear me-1"></i>Actions
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr style="border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                                <td class="px-4 py-3">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name" style="max-height: 50px; max-width: 50px; border-radius: 8px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div style="width: 50px; height: 50px; background-color: var(--light-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-green);">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    }
+                                </td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td class="px-4 py-3">
+                                        <span class="badge id-badge">@product.RowKey</span>
+                                    </td>
+                                }
+                                <td class="px-4 py-3">
+                                    <strong style="color: var(--dark-text); font-weight: 600;">@product.Name</strong>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="badge" style="background-color: rgba(76, 175, 80, 0.1); color: var(--primary-green); border: 1px solid rgba(76, 175, 80, 0.2);">@product.Category</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span style="color: var(--primary-green); font-weight: 600; font-size: 1.1rem;">@($"R{product.Price:F2}")</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="badge @(product.Stock > 10 ? "status-delivered" : product.Stock > 0 ? "status-pending" : "status-cancelled")">
+                                        @product.Stock units
+                                    </span>
+                                </td>
+                                <!-- Add to Cart Column -->
+                                <td class="px-4 py-3 text-center">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="d-inline-block">
+                                            @Html.AntiForgeryToken()
+
+                                            <!-- Hidden inputs to pass all product details -->
+                                            <input type="hidden" name="productRowKey" value="@product.RowKey" />
+                                            <input type="hidden" name="productName" value="@product.Name" />
+                                            <input type="hidden" name="unitPrice" value="@product.Price" />
+                                            <input type="hidden" name="imageUrl" value="@product.ImageUrl" />
+
+                                            <!-- Quantity selector -->
+                                            <div class="input-group input-group-sm" style="max-width: 150px; margin: 0 auto;">
+                                                <input type="number" name="quantity" value="1" min="1" max="@product.Stock"
+                                                       class="form-control text-center" style="max-width: 60px;" />
+                                                <button type="submit" class="btn btn-success btn-sm"
+                                                        title="Add @product.Name to cart"
+                                                        @(product.Stock <= 0 ? "disabled" : "")>
+                                                    <i class="bi bi-cart-plus"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Account" asp-action="Login"
+                                           class="btn btn-outline-success btn-sm"
+                                           title="Login to add to cart">
+                                            <i class="bi bi-lock me-1"></i>Login
+                                        </a>
+                                    }
+                                </td>
+                                <!-- Admin Actions Column -->
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td class="px-4 py-3">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-rowKey="@product.RowKey"
+                                               class="btn btn-outline-success btn-sm" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-rowKey="@product.RowKey"
+                                               class="btn btn-outline-warning btn-sm" title="Edit Product">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form asp-action="Delete" method="post" style="display:inline-block"
+                                                  onsubmit="return confirm('Are you sure you want to delete this product? This action cannot be undone.');">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="rowKey" value="@product.RowKey" />
+                                                <input type="hidden" name="eTag" value="@product.ETag" />
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Product">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 empty-state">
+                <div class="mb-4">
+                    <i class="bi bi-box-seam empty-icon"></i>
+                </div>
+                <h4 class="empty-title">No products found</h4>
+                <p class="text-muted mb-4">Start building your product catalog by adding your first product.</p>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="btn btn-success btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>Add Your First Product
+                    </a>
+                }
+                else
+                {
+                    <p class="text-muted">Check back soon for new products!</p>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="mt-4 text-center">
+        <p class="text-muted">
+            <i class="bi bi-info-circle me-1"></i>
+            Showing @Model.Count product@(Model.Count == 1 ? "" : "s")
+            @if (User.IsInRole("Admin"))
+            {
+                <span> | Total Value: @($"R{Model.Sum(p => p.Price * p.Stock):F2}")</span>
+            }
+        </p>
+    </div>
+}

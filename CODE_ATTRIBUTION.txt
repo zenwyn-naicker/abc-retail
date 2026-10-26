@@ -1,0 +1,77 @@
+/*Author: Zenwyn Naicker*/
+/*Code Attribution: */
+/**************************************************************************************************************
+ * Title: HOW TO MAKE AN MVC [CLDV6211]
+ * Author: The IIE
+ * Date: 2025
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Get started with ASP.NET Core MVC
+ * Author: Microsoft
+ * Date: 2025
+ * Availability: https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-9.0&tabs=visual-studio
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Quickstart: Deploy an ASP.NET web app
+ * Author: Microsoft
+ * Date: 2025
+ * Availability: https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net80&pivots=development-environment-vs
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Customizing Navbar In MVC 5 With Bootstrap
+ * Author: Hefaz, H
+ * Date: 2025
+ * Availability: https://www.csharp.com/article/customizing-navbar-in-mvc-5-with-bootstrap/
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: HTML, CSS, and C# in Web Development
+ * Author: Dentistkiller Yusuf
+ * Date: 2025
+ * Availability: https://github.com/Dentistkiller/CSS
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Integrating Azure Blob Storage with .NET
+ * Author: YogeshKumar Hadiya
+ * Date: 2024
+ * Availability: https://medium.com/c-sharp-programming/integrating-azure-blob-storage-with-net-b4fc16dfde73
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Introduction to Azure Table Storage
+ * Author: Microsoft
+ * Date: 2025
+ * Availability: https://learn.microsoft.com/en-us/azure/storage/tables/table-storage-overview
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Introduction to Azure Queue Storage
+ * Author: Microsoft
+ * Date: 2025
+ * Availability: https://learn.microsoft.com/en-us/azure/storage/queues/storage-queues-introduction
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Introduction to Azure File Share
+ * Author: Microsoft
+ * Date: 2025
+ * Availability: https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Azure Functions HTTP trigger
+ * Author: Microsoft
+ * Date: 2025
+ * Availability: https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=python-v2%2Cisolated-process%2Cnodejs-v4%2Cfunctionsv2&pivots=programming-language-csharp
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: HTTP Functions [CLDV6211]
+ * Author: The IIE
+ * Date: 2025
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: MIGRATING A DATABASE TO AZURE [CLDV6211]
+ * Author: The IIE
+ * Date: 2025
+ **************************************************************************************************************/
+/**************************************************************************************************************
+ * Title: Use cookie authentication without ASP.NET Core Identity
+ * Author: Microsoft
+ * Date: 2025
+ * Availability: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-9.0
+ **************************************************************************************************************/

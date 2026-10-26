@@ -1,0 +1,305 @@
+﻿@model ABCRetailWebApp.Models.OrderEntity
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Order Details</h1>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 page-title">
+        <i class="bi bi-receipt-cutoff me-2"></i>Order Details
+    </h2>
+    <div class="action-buttons">
+        <a asp-action="Edit" asp-route-rowKey="@Model.RowKey" class="btn btn-warning">
+            <i class="bi bi-pencil-square me-2"></i>Edit Order
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-arrow-left me-2"></i>Back to Orders
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 info-card">
+            <div class="card-header info-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h3 class="mb-1 text-white">Order #@Model.RowKey.Substring(0, Math.Min(8, Model.RowKey.Length))</h3>
+                            <small style="opacity: 0.75; color: white;">Full ID: @Model.RowKey</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge @(Model.Status switch
+                              {
+                                  "Pending" => "status-pending",
+                                  "Processing" => "status-processing",
+                                  "Shipped" => "status-shipped",
+                                  "Delivered" => "status-delivered",
+                                  "Cancelled" => "status-cancelled",
+                                  _ => "badge"
+                              })" style="font-size: 0.9rem; padding: 0.5rem 1rem;">@Model.Status</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0 details-table">
+                        <tbody>
+                            <tr>
+                                <td class="detail-label">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-clock-history me-2"></i>Last Updated
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    @if (Model.Timestamp.HasValue)
+                                    {
+                                        <div>
+                                            <strong style="color: var(--dark-text);">@Model.Timestamp.Value.ToString("MMMM dd, yyyy")</strong>
+                                            <br />
+                                            <small class="text-muted">@Model.Timestamp.Value.ToString("h:mm tt")</small>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #6c757d;">Not available</span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.DeliveryAddress))
+        {
+            <div class="card shadow-sm border-0 mt-4" style="border-radius: 15px;">
+                <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; color: var(--primary-green);">
+                    <h6 class="mb-0">
+                        <i class="bi bi-geo-alt me-2"></i>Delivery Address
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0" style="color: var(--dark-text); line-height: 1.6;">@Model.DeliveryAddress</p>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="card shadow-sm border-0 mt-4" style="border-radius: 15px;">
+                <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; color: var(--primary-green);">
+                    <h6 class="mb-0">
+                        <i class="bi bi-chat-left-text me-2"></i>Order Notes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0" style="color: var(--dark-text); line-height: 1.6;">@Model.Notes</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0" style="border-radius: 15px; margin-bottom: 1.5rem;">
+            <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: var(--primary-green);">
+                <h6 class="mb-0">
+                    <i class="bi bi-gear-fill me-2"></i>Order Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-rowKey="@Model.RowKey" class="btn btn-warning btn-lg">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Order
+                    </a>
+
+                    <a asp-controller="Customer" asp-action="Details" asp-route-rowKey="@Model.CustomerRowKey"
+                       class="btn btn-outline-info btn-lg">
+                        <i class="bi bi-person me-2"></i>View Customer
+                    </a>
+
+                    <a asp-controller="Product" asp-action="Details" asp-route-rowKey="@Model.ProductRowKey"
+                       class="btn btn-outline-info btn-lg">
+                        <i class="bi bi-box me-2"></i>View Product
+                    </a>
+
+                    <a asp-action="CustomerOrders" asp-route-customerRowKey="@Model.CustomerRowKey"
+                       class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-list me-2"></i>Customer's Orders
+                    </a>
+
+                    <hr style="margin: 1rem 0; border-color: rgba(76, 175, 80, 0.2);">
+
+                    <button class="btn btn-outline-success btn-lg" onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>Print Order
+                    </button>
+
+                    <button class="btn btn-outline-primary btn-lg" onclick="copyOrderInfo()">
+                        <i class="bi bi-clipboard me-2"></i>Copy Order Info
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-3" style="border-radius: 15px;">
+            <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: var(--primary-green);">
+                <h6 class="mb-0">
+                    <i class="bi bi-graph-up me-2"></i>Order Summary
+                </h6>
+            </div>
+            <div class="card-body">
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Subtotal:</span>
+                        <span style="color: var(--dark-text); font-weight: 500;">@($"R{Model.TotalAmount:F2}")</span>
+                    </div>
+                </div>
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Tax (0%):</span>
+                        <span style="color: var(--dark-text); font-weight: 500;">R0.00</span>
+                    </div>
+                </div>
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Shipping:</span>
+                        <span style="color: var(--dark-text); font-weight: 500;">Free</span>
+                    </div>
+                </div>
+                <hr style="margin: 1rem 0; border-color: rgba(76, 175, 80, 0.2);">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><strong>Total:</strong></span>
+                        <span style="color: var(--primary-green); font-size: 1.25rem; font-weight: bold;">@($"R{Model.TotalAmount:F2}")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        function copyOrderInfo() {
+            const orderInfo = `Order ID: ${@Html.Raw(Json.Serialize(Model.RowKey))}
+    Customer: ${@Html.Raw(Json.Serialize(Model.CustomerName))}
+    Product: ${@Html.Raw(Json.Serialize(Model.ProductName))}
+    Quantity: ${@Model.Quantity} units
+    Unit Price: @($"R{Model.UnitPrice:F2}")
+    Total Amount: @($"R{Model.TotalAmount:F2}")
+    Status: ${@Html.Raw(Json.Serialize(Model.Status))}
+    Order Date: ${@Html.Raw(Json.Serialize(Model.OrderDate.ToString("yyyy-MM-dd HH:mm")))}`;
+
+            navigator.clipboard.writeText(orderInfo).then(function() {
+                // Show temporary success message
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check me-2"></i>Copied!';
+                btn.classList.add('btn-success');
+                btn.classList.remove('btn-outline-primary');
+
+                setTimeout(function() {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-primary');
+                }, 2000);
+            });
+        }
+</script>-center">
+<i class="bi bi-hash me-2"></i>Order ID
+</div>
+</td>
+<td class="px-4 py-4">
+    <span class="badge id-badge">@Model.RowKey</span>
+</td>
+</tr>
+
+<tr>
+    <td class="detail-label">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-calendar me-2"></i>Order Date
+        </div>
+    </td>
+    <td class="px-4 py-4">
+        <div>
+            <strong style="color: var(--dark-text);">@Model.OrderDate.ToString("dddd, MMMM dd, yyyy")</strong>
+            <br />
+            <small class="text-muted">@Model.OrderDate.ToString("h:mm tt")</small>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class="detail-label">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-person me-2"></i>Customer
+        </div>
+    </td>
+    <td class="px-4 py-4">
+        <div>
+            <strong style="color: var(--dark-text); font-weight: 600;">@Model.CustomerName</strong>
+            <br />
+            <small class="text-muted">ID: @Model.CustomerRowKey</small>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class="detail-label">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-box me-2"></i>Product
+        </div>
+    </td>
+    <td class="px-4 py-4">
+        <div>
+            <strong style="color: var(--dark-text);">@Model.ProductName</strong>
+            <br />
+            <small class="text-muted">ID: @Model.ProductRowKey</small>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td class="detail-label">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-123 me-2"></i>Quantity
+        </div>
+    </td>
+    <td class="px-4 py-4">
+        <span class="badge" style="background-color: rgba(76, 175, 80, 0.1); color: var(--primary-green); border: 1px solid rgba(76, 175, 80, 0.2); font-size: 0.9rem; padding: 0.5rem 1rem;">@Model.Quantity units</span>
+    </td>
+</tr>
+
+<tr>
+    <td class="detail-label">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-currency-dollar me-2"></i>Unit Price
+        </div>
+    </td>
+    <td class="px-4 py-4">
+        <span style="color: var(--primary-green); font-weight: 600; font-size: 1.1rem;">@($"R{Model.UnitPrice:F2}")</span>
+    </td>
+</tr>
+
+<tr>
+    <td class="detail-label">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-calculator me-2"></i>Total Amount
+        </div>
+    </td>
+    <td class="px-4 py-4">
+        <strong style="color: var(--primary-green); font-weight: 700; font-size: 1.5rem;">@($"R{Model.TotalAmount:F2}")</strong>
+    </td>
+</tr>
+
+<tr>
+    <td class="detail-label">
+        <div class="d-flex align-items

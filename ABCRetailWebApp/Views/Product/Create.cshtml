@@ -1,0 +1,111 @@
+﻿@model ABCRetailWebApp.Models.ProductEntity
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Add New Product</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-header text-white text-center py-4"
+                 style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%); border-radius: 15px 15px 0 0;">
+                <i class="bi bi-plus-circle-fill" style="font-size: 2.5rem;"></i>
+                <h3 class="mt-2 mb-0">Product Information</h3>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label">
+                            <i class="bi bi-tag me-2"></i>Product Name <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Name" class="form-control form-control-lg"
+                               placeholder="Enter product name" required />
+                        <span asp-validation-for="Name" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Category" class="form-label">
+                            <i class="bi bi-folder me-2"></i>Category <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Category" class="form-control form-control-lg"
+                               placeholder="e.g., Electronics, Clothing, Books" required />
+                        <span asp-validation-for="Category" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label">
+                            <i class="bi bi-text-paragraph me-2"></i>Description
+                        </label>
+                        <textarea asp-for="Description" class="form-control form-control-lg" rows="4"
+                                  placeholder="Describe your product features and benefits"></textarea>
+                        <span asp-validation-for="Description" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Price" class="form-label">
+                                <i class="bi bi-currency-dollar me-2"></i>Price (R) <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Price" type="number" step="0.01" min="0.01"
+                                   class="form-control form-control-lg"
+                                   placeholder="0.00" required />
+                            <span asp-validation-for="Price" class="text-danger mt-1 d-block"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Stock" class="form-label">
+                                <i class="bi bi-boxes me-2"></i>Stock Quantity <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Stock" type="number" min="0"
+                                   class="form-control form-control-lg"
+                                   placeholder="0" required />
+                            <span asp-validation-for="Stock" class="text-danger mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ImageFile" class="form-label">
+                            <i class="bi bi-image me-2"></i>Product Image
+                        </label>
+                        <input type="file" class="form-control form-control-lg"
+                               id="ImageFile" name="ImageFile" accept="image/*" />
+                        <small class="form-text text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Supported formats: JPG, PNG, GIF, WebP. Maximum size: 5MB
+                        </small>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg me-md-2">
+                            <i class="bi bi-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success btn-lg px-4">
+                            <i class="bi bi-plus-circle me-2"></i>Add Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="mt-4">
+            <div class="alert" style="background-color: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.2); border-radius: 10px;">
+                <h6 style="color: var(--primary-green);">
+                    <i class="bi bi-lightbulb me-2"></i>Tips for Adding Products
+                </h6>
+                <ul class="mb-0" style="color: var(--dark-text);">
+                    <li>Use clear, descriptive product names</li>
+                    <li>Include high-quality product images</li>
+                    <li>Set competitive pricing and accurate stock levels</li>
+                    <li>Write detailed descriptions to help customers</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

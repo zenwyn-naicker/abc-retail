@@ -1,0 +1,124 @@
+﻿@model ABCRetailWebApp.Models.CustomerEntity
+@{
+    ViewData["Title"] = "Create Customer";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Add New Customer</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-header text-white text-center py-4"
+                 style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%); border-radius: 15px 15px 0 0;">
+                <i class="bi bi-person-plus-fill" style="font-size: 2.5rem;"></i>
+                <h3 class="mt-2 mb-0">Customer Information</h3>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-person me-2"></i>Full Name <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Name" class="form-control form-control-lg"
+                               style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px;"
+                               placeholder="Enter customer's full name" required />
+                        <span asp-validation-for="Name" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Email" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-envelope me-2"></i>Email Address <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Email" type="email" class="form-control form-control-lg"
+                               style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px;"
+                               placeholder="customer@example.com" required />
+                        <span asp-validation-for="Email" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Phone" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-telephone me-2"></i>Phone Number
+                        </label>
+                        <input asp-for="Phone" type="tel" class="form-control form-control-lg"
+                               style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px;"
+                               placeholder="(123) 456-7890" />
+                        <span asp-validation-for="Phone" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Address" class="form-label fw-semibold" style="color: var(--primary-green);">
+                            <i class="bi bi-geo-alt me-2"></i>Address
+                        </label>
+                        <textarea asp-for="Address" class="form-control form-control-lg" rows="4"
+                                  style="border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 10px; resize: vertical;"
+                                  placeholder="Enter complete address including street, city, state, and postal code"></textarea>
+                        <span asp-validation-for="Address" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <a asp-controller="Customer" asp-action="Index" class="btn btn-outline-secondary btn-lg me-md-2">
+                            <i class="bi bi-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success btn-lg px-4">
+                            <i class="bi bi-plus-circle me-2"></i>Create Customer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="mt-4">
+            <div class="alert" style="background-color: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.2); border-radius: 10px;">
+                <h6 style="color: var(--primary-green);">
+                    <i class="bi bi-lightbulb me-2"></i>Tips for Creating Customers
+                </h6>
+                <ul class="mb-0" style="color: var(--dark-text);">
+                    <li>Full Name and Email are required fields</li>
+                    <li>Provide accurate contact information for better communication</li>
+                    <li>Include complete address details for shipping and billing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Enhanced form validation styling
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Dynamic border color on focus
+        document.querySelectorAll('.form-control').forEach(function(input) {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = 'var(--primary-green)';
+                this.style.boxShadow = '0 0 0 0.2rem rgba(76, 175, 80, 0.25)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.style.borderColor = 'rgba(76, 175, 80, 0.2)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+}

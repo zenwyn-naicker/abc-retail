@@ -1,0 +1,101 @@
+@model ABCRetailWebApp.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <!-- Login Card -->
+            <div class="card shadow-lg border-0" style="border-radius: 15px;">
+                <!-- Card Header -->
+                <div class="card-header text-white text-center py-4" style="background: var(--gradient-primary); border-radius: 15px 15px 0 0;">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="mb-0 fw-bold">Welcome Back</h3>
+                    <p class="mb-0 opacity-75">Login to your ABC Retail account</p>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body p-4">
+                    @if (!string.IsNullOrEmpty(TempData["Error"] as string))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(TempData["Success"] as string))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Login" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label">
+                                <i class="bi bi-envelope me-1"></i>Email Address
+                            </label>
+                            <input asp-for="Email" class="form-control form-control-lg" placeholder="Enter your email" autocomplete="email" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label">
+                                <i class="bi bi-lock me-1"></i>Password
+                            </label>
+                            <input asp-for="Password" class="form-control form-control-lg" placeholder="Enter your password" autocomplete="current-password" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Remember Me Checkbox -->
+                        <div class="mb-4 form-check">
+                            <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                            <label asp-for="RememberMe" class="form-check-label">
+                                Remember me for 30 days
+                            </label>
+                        </div>
+
+                        <!-- Login Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer text-center py-3" style="background-color: rgba(76, 175, 80, 0.05); border-radius: 0 0 15px 15px;">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Secure login powered by Azure SQL Database
+                    </small>
+                </div>
+            </div>
+
+            <!-- Back to Home Link -->
+            <div class="text-center mt-4">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none" style="color: var(--primary-green);">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

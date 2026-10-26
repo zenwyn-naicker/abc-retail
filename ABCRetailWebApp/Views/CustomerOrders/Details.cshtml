@@ -1,0 +1,270 @@
+﻿@model ABCRetailWebApp.Models.CustomerOrderEntity
+
+@{
+    ViewData["Title"] = $"Order #{Model.OrderId}";
+}
+
+<div class="container py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 mb-2" style="color: var(--primary-green);">
+                <i class="bi bi-receipt me-2"></i>Order #@Model.OrderId
+            </h1>
+            <p class="text-muted mb-0">
+                <i class="bi bi-calendar3 me-1"></i>
+                Placed on @Model.OrderDate.ToString("MMMM dd, yyyy 'at' hh:mm tt")
+            </p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-success">
+                <i class="bi bi-arrow-left me-1"></i>Back to Orders
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (!string.IsNullOrEmpty(TempData["Success"] as string))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(TempData["Error"] as string))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Order Details -->
+        <div class="col-lg-8 mb-4">
+            <!-- Order Items Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header" style="background: var(--gradient-primary); color: white; border-radius: 8px 8px 0 0;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-box-seam me-2"></i>Order Items
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-end">Unit Price</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-box text-muted me-2" style="font-size: 1.5rem;"></i>
+                                                <div>
+                                                    <strong class="d-block">@item.ProductName</strong>
+                                                    <small class="text-muted">SKU: @item.ProductRowKey</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <span class="badge bg-light text-dark">@item.Quantity</span>
+                                        </td>
+                                        <td class="text-end align-middle">
+                                            <span style="color: var(--primary-green);">R @item.UnitPrice.ToString("N2")</span>
+                                        </td>
+                                        <td class="text-end align-middle">
+                                            <strong>R @item.TotalPrice.ToString("N2")</strong>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Order Total:</strong></td>
+                                    <td class="text-end">
+                                        <h5 class="mb-0" style="color: var(--primary-green);">R @Model.TotalAmount.ToString("N2")</h5>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Information Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header" style="background: var(--gradient-primary); color: white; border-radius: 8px 8px 0 0;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-truck me-2"></i>Delivery Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small d-block mb-1">
+                                <i class="bi bi-person me-1"></i>Customer Name
+                            </label>
+                            <strong>@Model.CustomerName</strong>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small d-block mb-1">
+                                <i class="bi bi-calendar-check me-1"></i>Order Date
+                            </label>
+                            <strong>@Model.OrderDate.ToString("MMM dd, yyyy")</strong>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.DeliveryAddress))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted small d-block mb-1">
+                                <i class="bi bi-geo-alt me-1"></i>Delivery Address
+                            </label>
+                            <div class="p-3 bg-light rounded">
+                                @Model.DeliveryAddress
+                            </div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div>
+                            <label class="text-muted small d-block mb-1">
+                                <i class="bi bi-chat-left-text me-1"></i>Order Notes
+                            </label>
+                            <div class="p-3 bg-light rounded">
+                                @Model.Notes
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-4">
+            <!-- Order Status Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header" style="background: var(--gradient-primary); color: white; border-radius: 8px 8px 0 0;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Order Status
+                    </h5>
+                </div>
+                <div class="card-body text-center py-4">
+                    @{
+                        var statusClass = Model.OrderStatus.ToLower() switch
+                        {
+                            "pending" => "status-pending",
+                            "processing" => "status-processing",
+                            "processed" => "status-delivered",
+                            "shipped" => "status-shipped",
+                            "delivered" => "status-delivered",
+                            "cancelled" => "status-cancelled",
+                            _ => "badge-secondary"
+                        };
+
+                        var statusIcon = Model.OrderStatus.ToLower() switch
+                        {
+                            "pending" => "bi-clock-history",
+                            "processing" => "bi-arrow-repeat",
+                            "processed" => "bi-check-circle",
+                            "shipped" => "bi-truck",
+                            "delivered" => "bi-check-circle-fill",
+                            "cancelled" => "bi-x-circle",
+                            _ => "bi-circle"
+                        };
+                    }
+
+                    <i class="bi @statusIcon mb-3" style="font-size: 3rem; color: var(--primary-green);"></i>
+                    <h4 class="mb-3">
+                        <span class="badge @statusClass" style="font-size: 1rem;">
+                            @Model.OrderStatus
+                        </span>
+                    </h4>
+                    <p class="text-muted small mb-0">
+                        @if (Model.OrderStatus.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span>Your order is being prepared</span>
+                        }
+                        else if (Model.OrderStatus.Equals("Processing", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span>Your order is being processed</span>
+                        }
+                        else if (Model.OrderStatus.Equals("PROCESSED", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span>Your order has been processed and ready for shipping</span>
+                        }
+                        else if (Model.OrderStatus.Equals("Shipped", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span>Your order is on the way</span>
+                        }
+                        else if (Model.OrderStatus.Equals("Delivered", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span>Your order has been delivered</span>
+                        }
+                        else if (Model.OrderStatus.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span>This order has been cancelled</span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <!-- Order Summary Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header" style="background: var(--gradient-primary); color: white; border-radius: 8px 8px 0 0;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-receipt me-2"></i>Order Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Order ID:</span>
+                        <span class="id-badge">#@Model.OrderId</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Items:</span>
+                        <strong>@Model.Items.Count</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal:</span>
+                        <strong>R @Model.TotalAmount.ToString("N2")</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Shipping:</span>
+                        <strong class="text-success">FREE</strong>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0" style="color: var(--primary-green);">Total:</h5>
+                        <h4 class="mb-0" style="color: var(--primary-green);">R @Model.TotalAmount.ToString("N2")</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Need Help Card -->
+            <div class="card border-0 shadow-sm mt-4" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(45, 125, 50, 0.05) 100%);">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-headset mb-3" style="font-size: 2.5rem; color: var(--primary-green);"></i>
+                    <h6 style="color: var(--primary-green);">Need Help?</h6>
+                    <p class="text-muted small mb-3">
+                        Contact our customer support team for any questions about your order.
+                    </p>
+                    <button class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-chat-dots me-1"></i>Contact Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

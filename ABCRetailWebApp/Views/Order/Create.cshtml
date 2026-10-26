@@ -1,0 +1,263 @@
+﻿@model ABCRetailWebApp.Models.OrderEntity
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Create New Order</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-header text-white py-4"
+                 style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%); border-radius: 15px 15px 0 0;">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-plus-circle-fill" style="font-size: 2.5rem;"></i>
+                    <div class="ms-3">
+                        <h3 class="mb-0">Order Information</h3>
+                        <small style="opacity: 0.75; color: white;">Fill in the details below to create a new order</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <!-- Hidden UnitPrice field for server-side validation -->
+                    <input asp-for="UnitPrice" type="hidden" />
+
+                    <div class="row mb-4">
+                        <!-- Customer -->
+                        <div class="col-md-6">
+                            <label asp-for="CustomerRowKey" class="form-label">
+                                <i class="bi bi-person me-2"></i>Customer <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="CustomerRowKey" class="form-select form-control-lg"
+                                    asp-items="ViewBag.Customers" required>
+                                <option value="">-- Select Customer --</option>
+                            </select>
+                            <span asp-validation-for="CustomerRowKey" class="text-danger mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Product -->
+                        <div class="col-md-6">
+                            <label asp-for="ProductRowKey" class="form-label">
+                                <i class="bi bi-box me-2"></i>Product <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="ProductRowKey" class="form-select form-control-lg"
+                                    asp-items="ViewBag.Products" required>
+                                <option value="">-- Select Product --</option>
+                            </select>
+                            <span asp-validation-for="ProductRowKey" class="text-danger mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <!-- Quantity -->
+                        <div class="col-md-6">
+                            <label asp-for="Quantity" class="form-label">
+                                <i class="bi bi-123 me-2"></i>Quantity <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Quantity" class="form-control form-control-lg"
+                                   type="number" min="1" placeholder="1" required />
+                            <span asp-validation-for="Quantity" class="text-danger mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label">
+                                <i class="bi bi-flag me-2"></i>Order Status
+                            </label>
+                            <select asp-for="Status" class="form-select form-control-lg"
+                                    asp-items="ViewBag.OrderStatuses">
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Address -->
+                    <div class="mb-4">
+                        <label asp-for="DeliveryAddress" class="form-label">
+                            <i class="bi bi-geo-alt me-2"></i>Delivery Address
+                        </label>
+                        <textarea asp-for="DeliveryAddress" class="form-control form-control-lg"
+                                  rows="3" placeholder="Leave empty to use customer's registered address"></textarea>
+                        <small class="form-text text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            If left empty, the customer's registered address will be used for delivery.
+                        </small>
+                        <span asp-validation-for="DeliveryAddress" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label">
+                            <i class="bi bi-chat-left-text me-2"></i>Order Notes
+                        </label>
+                        <textarea asp-for="Notes" class="form-control form-control-lg"
+                                  rows="3" placeholder="Any special instructions or notes for this order"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg me-md-2">
+                            <i class="bi bi-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success btn-lg px-4">
+                            <i class="bi bi-check-circle me-2"></i>Create Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary & Instructions -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0" style="border-radius: 15px; margin-bottom: 1.5rem;">
+            <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: var(--primary-green);">
+                <h5 class="mb-0">
+                    <i class="bi bi-receipt me-2"></i>Order Preview
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="order-summary" style="display: none;">
+                    <div class="mb-3" style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                        <strong>Customer:</strong>
+                        <span id="selected-customer" style="color: var(--dark-text); font-weight: 500;">-</span>
+                    </div>
+                    <div class="mb-3" style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                        <strong>Product:</strong>
+                        <span id="selected-product" style="color: var(--dark-text); font-weight: 500;">-</span>
+                    </div>
+                    <div class="mb-3" style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                        <strong>Unit Price:</strong>
+                        <span id="unit-price" style="color: var(--dark-text); font-weight: 500;">R0.00</span>
+                    </div>
+                    <div class="mb-3" style="padding: 0.5rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                        <strong>Quantity:</strong>
+                        <span id="quantity-display" style="color: var(--dark-text); font-weight: 500;">0</span>
+                    </div>
+                    <hr style="margin: 1rem 0; border-color: rgba(76, 175, 80, 0.2);">
+                    <div style="background-color: rgba(76, 175, 80, 0.05); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong>Total Amount:</strong>
+                        <span id="total-amount" style="color: var(--primary-green); font-size: 1.25rem; font-weight: bold;">R0.00</span>
+                    </div>
+                </div>
+                <div id="no-selection" style="text-align: center; padding: 2rem 1rem; color: #6c757d;">
+                    <i class="bi bi-info-circle" style="font-size: 3rem; opacity: 0.5;"></i>
+                    <p class="mt-2 mb-0">Select customer and product to see order preview</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-3" style="border-radius: 15px;">
+            <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: var(--primary-green);">
+                <h6 class="mb-0">
+                    <i class="bi bi-list-check me-2"></i>Instructions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div style="padding: 0.5rem 0; color: var(--dark-text); display: flex; align-items: center;">
+                        <i class="bi bi-1-circle text-success me-2"></i>
+                        <span>Select a customer from the dropdown</span>
+                    </div>
+                    <div style="padding: 0.5rem 0; color: var(--dark-text); display: flex; align-items: center;">
+                        <i class="bi bi-2-circle text-success me-2"></i>
+                        <span>Choose a product with available stock</span>
+                    </div>
+                    <div style="padding: 0.5rem 0; color: var(--dark-text); display: flex; align-items: center;">
+                        <i class="bi bi-3-circle text-success me-2"></i>
+                        <span>Enter desired quantity</span>
+                    </div>
+                    <div style="padding: 0.5rem 0; color: var(--dark-text); display: flex; align-items: center;">
+                        <i class="bi bi-info-circle text-info me-2"></i>
+                        <span>Product stock will be automatically updated</span>
+                    </div>
+                    <div style="padding: 0.5rem 0; color: var(--dark-text); display: flex; align-items: center;">
+                        <i class="bi bi-envelope text-info me-2"></i>
+                        <span>A queue message will be sent upon order creation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            function updateOrderSummary() {
+                var customerSelect = $('#CustomerRowKey');
+                var productSelect = $('#ProductRowKey');
+                var quantityInput = $('#Quantity');
+
+                var customerText = customerSelect.find('option:selected').text();
+                var productText = productSelect.find('option:selected').text();
+                var quantity = parseInt(quantityInput.val()) || 0;
+
+                if (customerSelect.val() && productSelect.val() && quantity > 0) {
+                    var priceMatch = productText.match(/R([\d.]+)/);
+                    var unitPrice = priceMatch ? parseFloat(priceMatch[1]) : 0;
+                    var totalAmount = unitPrice * quantity;
+
+                    $('#selected-customer').text(customerText);
+                    $('#selected-product').text(productText.split(' - ')[0]);
+                    $('#unit-price').text('R' + unitPrice.toFixed(2));
+                    $('#quantity-display').text(quantity);
+                    $('#total-amount').text('R' + totalAmount.toFixed(2));
+
+                    $('#order-summary').show();
+                    $('#no-selection').hide();
+
+                    // Update hidden UnitPrice for server-side
+                    $('#UnitPrice').val(unitPrice);
+                } else {
+                    $('#order-summary').hide();
+                    $('#no-selection').show();
+                    $('#UnitPrice').val(0);
+                }
+            }
+
+            $('#CustomerRowKey, #ProductRowKey, #Quantity').on('change input', updateOrderSummary);
+
+            // Initial update
+            updateOrderSummary();
+
+            // Enhanced form validation styling
+            (function() {
+                'use strict';
+                window.addEventListener('load', function() {
+                    var forms = document.getElementsByClassName('needs-validation');
+                    var validation = Array.prototype.filter.call(forms, function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (form.checkValidity() === false) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+                }, false);
+            })();
+
+            // Dynamic border color on focus
+            $('.form-control, .form-select').on('focus', function() {
+                $(this).css({
+                    'border-color': 'var(--primary-green)',
+                    'box-shadow': '0 0 0 0.2rem rgba(76, 175, 80, 0.25)'
+                });
+            }).on('blur', function() {
+                $(this).css({
+                    'border-color': 'rgba(76, 175, 80, 0.2)',
+                    'box-shadow': 'none'
+                });
+            });
+        });
+    </script>
+}

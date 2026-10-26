@@ -1,0 +1,287 @@
+﻿@model ABCRetailWebApp.Models.OrderEntity
+@{
+    ViewData["Title"] = "Edit Order";
+}
+
+<div class="hero-section text-center mb-4">
+    <h1 class="display-4">Edit Order</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-header text-white py-4"
+                 style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%); border-radius: 15px 15px 0 0;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-pencil-square" style="font-size: 2.5rem;"></i>
+                        <div class="ms-3">
+                            <h3 class="mb-0">Edit Order</h3>
+                            <small style="opacity: 0.75; color: white;">Order ID: @Model.RowKey.Substring(0, Math.Min(8, Model.RowKey.Length))</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <small style="opacity: 0.75; color: white;">
+                            <i class="bi bi-calendar me-1"></i>
+                            Created: @Model.OrderDate.ToString("MMM dd, yyyy")
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="PartitionKey" />
+                    <input type="hidden" asp-for="RowKey" />
+                    <input type="hidden" name="ETag" value="@Model.ETag.ToString()" />
+                    <input type="hidden" asp-for="Timestamp" />
+                    <input type="hidden" asp-for="OrderDate" />
+
+                    <!-- Order ID Display -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-hash me-2"></i>Order ID
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background-color: var(--light-bg); border-color: rgba(76, 175, 80, 0.2);">
+                                <i class="bi bi-lock-fill text-muted"></i>
+                            </span>
+                            <input value="@Model.RowKey" class="form-control form-control-lg" readonly
+                                   style="background-color: var(--light-bg); border-color: rgba(76, 175, 80, 0.2);" />
+                        </div>
+                        <small class="text-muted">Order ID cannot be changed</small>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="CustomerRowKey" class="form-label">
+                                <i class="bi bi-person me-2"></i>Customer <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="CustomerRowKey" class="form-select form-control-lg"
+                                    asp-items="ViewBag.Customers" required>
+                                <option value="">-- Select Customer --</option>
+                            </select>
+                            <span asp-validation-for="CustomerRowKey" class="text-danger mt-1 d-block"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ProductRowKey" class="form-label">
+                                <i class="bi bi-box me-2"></i>Product <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="ProductRowKey" class="form-select form-control-lg"
+                                    asp-items="ViewBag.Products" required>
+                                <option value="">-- Select Product --</option>
+                            </select>
+                            <span asp-validation-for="ProductRowKey" class="text-danger mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="Quantity" class="form-label">
+                                <i class="bi bi-123 me-2"></i>Quantity <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Quantity" class="form-control form-control-lg"
+                                   type="number" min="1" required />
+                            <span asp-validation-for="Quantity" class="text-danger mt-1 d-block"></span>
+                            <small class="text-muted">Current: @Model.Quantity</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Status" class="form-label">
+                                <i class="bi bi-flag me-2"></i>Order Status <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="Status" class="form-select form-control-lg"
+                                    asp-items="ViewBag.OrderStatuses" required>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger mt-1 d-block"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">
+                                <i class="bi bi-calendar me-2"></i>Order Date
+                            </label>
+                            <input value="@Model.OrderDate.ToString("yyyy-MM-dd HH:mm")"
+                                   class="form-control form-control-lg" readonly
+                                   style="background-color: var(--light-bg); border-color: rgba(76, 175, 80, 0.2);" />
+                            <small class="text-muted">Order date cannot be changed</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="DeliveryAddress" class="form-label">
+                            <i class="bi bi-geo-alt me-2"></i>Delivery Address
+                        </label>
+                        <textarea asp-for="DeliveryAddress" class="form-control form-control-lg"
+                                  rows="3" placeholder="Enter delivery address"></textarea>
+                        <span asp-validation-for="DeliveryAddress" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label">
+                            <i class="bi bi-chat-left-text me-2"></i>Order Notes
+                        </label>
+                        <textarea asp-for="Notes" class="form-control form-control-lg"
+                                  rows="3" placeholder="Any special instructions or notes"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-5">
+                        <div>
+                            <a asp-action="Details" asp-route-rowKey="@Model.RowKey" class="btn btn-outline-info btn-lg me-2">
+                                <i class="bi bi-eye me-2"></i>View Details
+                            </a>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Orders
+                            </a>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-success btn-lg px-4">
+                                <i class="bi bi-check-circle me-2"></i>Update Order
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0" style="border-radius: 15px; margin-bottom: 1.5rem;">
+            <div class="card-header" style="background-color: var(--light-bg); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: var(--primary-green);">
+                <h6 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Current Order Details
+                </h6>
+            </div>
+            <div class="card-body">
+                <div style="padding: 0.75rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <strong>Customer:</strong>
+                    <div style="margin-top: 0.25rem; color: var(--dark-text);">@Model.CustomerName</div>
+                </div>
+                <div style="padding: 0.75rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <strong>Product:</strong>
+                    <div style="margin-top: 0.25rem; color: var(--dark-text);">@Model.ProductName</div>
+                </div>
+                <div style="padding: 0.75rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <strong>Current Quantity:</strong>
+                    <div style="margin-top: 0.25rem;">
+                        <span class="badge" style="background-color: rgba(76, 175, 80, 0.1); color: var(--primary-green); border: 1px solid rgba(76, 175, 80, 0.2);">@Model.Quantity</span>
+                    </div>
+                </div>
+                <div style="padding: 0.75rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <strong>Unit Price:</strong>
+                    <div style="margin-top: 0.25rem; color: var(--primary-green); font-weight: 600;">@($"R{Model.UnitPrice:F2}")</div>
+                </div>
+                <div style="padding: 0.75rem 0; border-bottom: 1px solid rgba(76, 175, 80, 0.1);">
+                    <strong>Total Amount:</strong>
+                    <div style="margin-top: 0.25rem; color: var(--primary-green); font-weight: 700; font-size: 1.1rem;">@($"R{Model.TotalAmount:F2}")</div>
+                </div>
+                <div style="padding: 0.75rem 0;">
+                    <strong>Current Status:</strong>
+                    <div style="margin-top: 0.25rem;">
+                        <span class="badge @(Model.Status switch
+                              {
+                                  "Pending" => "status-pending",
+                                  "Processing" => "status-processing",
+                                  "Shipped" => "status-shipped",
+                                  "Delivered" => "status-delivered",
+                                  "Cancelled" => "status-cancelled",
+                                  _ => "badge"
+                              })">@Model.Status</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-3" style="border-radius: 15px;">
+            <div class="card-header" style="background-color: rgba(220, 53, 69, 0.1); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: #721c24;">
+                <h6 class="mb-0">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Danger Zone
+                </h6>
+            </div>
+            <div class="card-body">
+                <form asp-action="Delete" method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this order? This action cannot be undone and will restore the product stock.');">
+                    <input type="hidden" name="rowKey" value="@Model.RowKey" />
+                    <input type="hidden" name="eTag" value="@Model.ETag.ToString()" />
+                    <button type="submit" class="btn btn-outline-danger btn-lg w-100">
+                        <i class="bi bi-trash me-2"></i>Delete Order
+                    </button>
+                </form>
+                <div style="margin-top: 0.5rem; font-size: 0.875rem; color: #6c757d;">
+                    <i class="bi bi-info-circle me-1"></i>
+                    This will restore @Model.Quantity item(s) to product stock.
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Section -->
+        <div class="card shadow-sm border-0 mt-3" style="border-radius: 15px;">
+            <div class="card-header" style="background-color: rgba(255, 193, 7, 0.1); border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; text-align: center; color: #856404;">
+                <h6 class="mb-0">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Important Notice
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="mb-0" style="color: var(--dark-text);">
+                    Changes to order information will affect inventory levels and may impact delivery schedules.
+                    Please ensure all information is accurate before saving.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Enhanced form validation styling
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Dynamic border color on focus
+        document.querySelectorAll('.form-control, .form-select').forEach(function(input) {
+            if (!input.readOnly) {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-green)';
+                    this.style.boxShadow = '0 0 0 0.2rem rgba(76, 175, 80, 0.25)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = 'rgba(76, 175, 80, 0.2)';
+                    this.style.boxShadow = 'none';
+                });
+            }
+        });
+
+        // Confirmation dialog for unsaved changes
+        let formChanged = false;
+        document.querySelectorAll('input, textarea, select').forEach(function(input) {
+            if (!input.readOnly && input.type !== 'hidden') {
+                input.addEventListener('change', function() {
+                    formChanged = true;
+                });
+            }
+        });
+
+        document.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                if (formChanged && !confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}
